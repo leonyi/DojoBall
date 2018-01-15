@@ -52,8 +52,18 @@ class ViewController: UIViewController {
                     x < -2.5 {
                     self?.navigationController?.popViewController(animated: true)
                     self?.categoryLabel.text = categoryArr[categoryShakeCount]
-                    categoryShakeCount += 1
                     
+                    if categoryShakeCount == categoryArr.count - 1 {
+                        categoryShakeCount  = 0
+                        self?.stringLabel.text = ""
+                    }
+                    else {
+                        print("Motion ended")
+                        self?.stringLabel.text = categoryArr[categoryShakeCount]
+                        categoryShakeCount += 1
+                    }
+//                    categoryShakeCount += 1
+                    self?.stringLabel.text = ""
                 }
             }
         }
