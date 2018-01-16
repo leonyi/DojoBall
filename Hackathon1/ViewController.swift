@@ -9,6 +9,8 @@
 import UIKit
 import CoreMotion
 
+var currentArr: [String] = []
+
 //category array
 var categoryArr = ["Algorithms", "Uplifting Quotes", "Jokes"]
 
@@ -95,32 +97,84 @@ class ViewController: UIViewController {
     }
     
     @objc func swipeGesture(sender: UISwipeGestureRecognizer) {
-        // go to next category
+        // go to next category, access different array for main content
         if(sender.direction == .right) {
-            print("swiped right")
+            print("swiped right, next category")
+            print("Swipe Count:", categorySwipeCount)
+            // if at the last category, loop to the first one
             if categorySwipeCount == categoryArr.count - 1 {
                 categorySwipeCount = 0
                 categoryLabel.text = categoryArr[categorySwipeCount]
+                if categoryArr[categorySwipeCount] == "Algorithms" {
+                    currentArr = algoArr
+                    stringLabel.text = currentArr[0]
+                }
+                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                    currentArr = inspirationalQuoteArr
+                    stringLabel.text = currentArr[0]
+                }
+                else {
+                    currentArr = jokeArr
+                    stringLabel.text = currentArr[0]
+                }
             }
+            // if at the first category, move to the next
             else {
                 categorySwipeCount += 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
+                if categoryArr[categorySwipeCount] == "Algorithms" {
+                    currentArr = algoArr
+                    stringLabel.text = currentArr[0]
+                }
+                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                    currentArr = inspirationalQuoteArr
+                    stringLabel.text = currentArr[0]
+                }
+                else {
+                    currentArr = jokeArr
+                    stringLabel.text = currentArr[0]
+                }
             }
         }
         
         // go to previous
         if(sender.direction == .left) {
-            print("Swiping left")
-            print(categorySwipeCount)
+            print("swiped left, previous category")
+            print("Swipe Count:", categorySwipeCount)
+            
             if categorySwipeCount == 0 {
                 categorySwipeCount = categoryArr.count - 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
                 print(categoryArr[categorySwipeCount])
+                if categoryArr[categorySwipeCount] == "Algorithms" {
+                    currentArr = algoArr
+                    stringLabel.text = currentArr[0]
+                }
+                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                    currentArr = inspirationalQuoteArr
+                    stringLabel.text = currentArr[0]
+                }
+                else {
+                    currentArr = jokeArr
+                    stringLabel.text = currentArr[0]
+                }
             }
             else {
                 categorySwipeCount -= 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
                 print(categoryArr[categorySwipeCount])
+                if categoryArr[categorySwipeCount] == "Algorithms" {
+                    currentArr = algoArr
+                    stringLabel.text = currentArr[0]
+                }
+                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                    currentArr = inspirationalQuoteArr
+                    stringLabel.text = currentArr[0]
+                }
+                else {
+                    currentArr = jokeArr
+                    stringLabel.text = currentArr[0]
+                }
             }
         }
     }
@@ -128,23 +182,20 @@ class ViewController: UIViewController {
     
     override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
         print("Motion started")
-        
-        
-        
     }
     
+    // this is when stuff
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-        
-        
-        
-        if mainContentShakeCount == algoArr.count - 1 {
+     
+        if mainContentShakeCount == currentArr.count - 1 {
             mainContentShakeCount = 0
-            stringLabel.text = algoArr[mainContentShakeCount]
+            stringLabel.text = currentArr[mainContentShakeCount]
         }
         else {
-            print("Motion ended")
-            stringLabel.text = algoArr[mainContentShakeCount]
-            mainContentShakeCount += 1
+            print("Motion ended and shakecount = ", mainContentShakeCount)
+//            stringLabel.text = currentArr[mainContentShakeCount]
+//            mainContentShakeCount += 1
+//            print(currentArr[mainContentShakeCount])
         }
         
         
