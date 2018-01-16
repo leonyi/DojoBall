@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import Foundation
 import CoreMotion
 
+// Initialize content array.
 var currentArr: [String] = []
 
-//category array
-var categoryArr = ["Algorithms", "Uplifting Quotes", "Jokes"]
+// Category array
+var categoryArr = ["Get Challenged", "Get Inspired", "Get Amused"]
 
 //main content arrays
 var algoArr = [
@@ -22,16 +24,24 @@ var algoArr = [
     "How would you find the greatest common divisor of two numbers?",
     "Ending: How would you remove duplicate members from an array?"
 ]
-var inspirationalQuoteArr = ["inspo1", "inspo2", "inspo3", "inspo4", "inspo5"]
-var jokeArr = ["joke1", "joke2", "joke3", "joke4", "joke5"]
+var inspirationalQuoteArr = [
+    "inspo1",
+    "inspo2",
+    "inspo3",
+    "inspo4",
+    "inspo5"]
+var jokeArr = [
+    "joke1",
+    "joke2",
+    "joke3",
+    "joke4",
+    "joke5"]
 
 //shake counters
 var categorySwipeCount = 0
 var mainContentShakeCount = 0
 
-
 var motionManager: CMMotionManager?
-
 var isAccelerometerAvailable: Bool = false
 
 class ViewController: UIViewController {
@@ -46,9 +56,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let ownView: UIView = self.view
         
-        //when app first loads
+        // When app first loads
         categoryLabel.text = categoryArr[0]
         stringLabel.text = algoArr[0]
+        
+        // Set initial category to "Get Challenged" content.
+        currentArr = algoArr
+
+        
+        
         
         //detecting device motion
         if motionManager.isDeviceMotionAvailable {
@@ -69,6 +85,34 @@ class ViewController: UIViewController {
         ownView.addGestureRecognizer(leftSwipeGesture)
         ownView.addGestureRecognizer(rightSwipeGesture)
         //        iterateMainContent()
+    }
+    
+    func startReadingMotionData() {
+        // set read speed
+        motionManager.deviceMotionUpdateInterval = 1
+        // start reading
+        motionManager.startDeviceMotionUpdates(to: opQueue) {
+            (data: CMDeviceMotion?, error: Error?) in
+            
+            if let mydata = data {
+                print("mydata", mydata.attitude)
+                print("pitch", self.degrees(mydata.attitude.pitch))
+            }
+        }
+    }
+    
+    func degrees(_ radians: Double) -> Double {
+        return 180/Double.pi * radians
+    }
+    
+    func randomIndex(contentArr: [String] ) -> Int {
+        var i: Int = 0
+        print("Current array size: ",contentArr.count )
+        
+        if contentArr.count > 0 {
+             i = Int(arc4random_uniform(UInt32(contentArr.count)))
+        }
+        return i
     }
     
     func iterateMainContent() {
@@ -96,6 +140,11 @@ class ViewController: UIViewController {
         }
     }
     
+    override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
+        print("Motion started")
+    }
+    
+    
     @objc func swipeGesture(sender: UISwipeGestureRecognizer) {
         // go to next category, access different array for main content
         if(sender.direction == .right) {
@@ -105,39 +154,50 @@ class ViewController: UIViewController {
             if categorySwipeCount == categoryArr.count - 1 {
                 categorySwipeCount = 0
                 categoryLabel.text = categoryArr[categorySwipeCount]
-                if categoryArr[categorySwipeCount] == "Algorithms" {
+                if categoryArr[categorySwipeCount] == "Get Challenged" {
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
                     currentArr = algoArr
                     stringLabel.text = currentArr[0]
                 }
-                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                else if categoryArr[categorySwipeCount] == "Get Inspired" {
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
+
                     currentArr = inspirationalQuoteArr
                     stringLabel.text = currentArr[0]
                 }
                 else {
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
+
                     currentArr = jokeArr
                     stringLabel.text = currentArr[0]
                 }
             }
-            // if at the first category, move to the next
+            // If at the first category, move to the next.
             else {
                 categorySwipeCount += 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
-                if categoryArr[categorySwipeCount] == "Algorithms" {
+                if categoryArr[categorySwipeCount] == "Get Challenged" {
                     currentArr = algoArr
                     stringLabel.text = currentArr[0]
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
+
                 }
-                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                else if categoryArr[categorySwipeCount] == "Get Inspired" {
                     currentArr = inspirationalQuoteArr
                     stringLabel.text = currentArr[0]
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
+
                 }
                 else {
                     currentArr = jokeArr
                     stringLabel.text = currentArr[0]
+                    print("Current Category: \(categoryArr[categorySwipeCount]) ")
+
                 }
             }
         }
         
-        // go to previous
+        // Go to previous category
         if(sender.direction == .left) {
             print("swiped left, previous category")
             print("Swipe Count:", categorySwipeCount)
@@ -146,11 +206,11 @@ class ViewController: UIViewController {
                 categorySwipeCount = categoryArr.count - 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
                 print(categoryArr[categorySwipeCount])
-                if categoryArr[categorySwipeCount] == "Algorithms" {
+                if categoryArr[categorySwipeCount] == "Get Challenged" {
                     currentArr = algoArr
                     stringLabel.text = currentArr[0]
                 }
-                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                else if categoryArr[categorySwipeCount] == "Get Inspired" {
                     currentArr = inspirationalQuoteArr
                     stringLabel.text = currentArr[0]
                 }
@@ -163,11 +223,11 @@ class ViewController: UIViewController {
                 categorySwipeCount -= 1
                 categoryLabel.text = categoryArr[categorySwipeCount]
                 print(categoryArr[categorySwipeCount])
-                if categoryArr[categorySwipeCount] == "Algorithms" {
+                if categoryArr[categorySwipeCount] == "Get Challenged" {
                     currentArr = algoArr
                     stringLabel.text = currentArr[0]
                 }
-                else if categoryArr[categorySwipeCount] == "Uplifting Quotes" {
+                else if categoryArr[categorySwipeCount] == "Get Inspired" {
                     currentArr = inspirationalQuoteArr
                     stringLabel.text = currentArr[0]
                 }
@@ -179,45 +239,9 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
-        print("Motion started")
-    }
-    
-    // this is when stuff
+    // When the shaking ends let's show them the category content.
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-     
-        if mainContentShakeCount == currentArr.count - 1 {
-            mainContentShakeCount = 0
-            stringLabel.text = currentArr[mainContentShakeCount]
-        }
-        else {
-            print("Motion ended and shakecount = ", mainContentShakeCount)
-//            stringLabel.text = currentArr[mainContentShakeCount]
-//            mainContentShakeCount += 1
-//            print(currentArr[mainContentShakeCount])
-        }
-        
-        
-        
-    }
-    
-    func startReadingMotionData() {
-        // set read speed
-        motionManager.deviceMotionUpdateInterval = 1
-        // start reading
-        motionManager.startDeviceMotionUpdates(to: opQueue) {
-            (data: CMDeviceMotion?, error: Error?) in
-            
-            if let mydata = data {
-                print("mydata", mydata.attitude)
-                print("pitch", self.degrees(mydata.attitude.pitch))
-            }
-        }
-    }
-    
-    func degrees(_ radians: Double) -> Double {
-        return 180/Double.pi * radians
+        stringLabel.text = currentArr[randomIndex(contentArr: currentArr)]
     }
     
 }
